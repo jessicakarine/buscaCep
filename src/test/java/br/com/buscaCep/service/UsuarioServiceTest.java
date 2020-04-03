@@ -21,6 +21,14 @@ import br.com.buscaCep.repository.UsuarioRepository;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UsuarioServiceTest {
 
+	private static final String UF = "AP";
+	private static final String NOME = "João";
+	private static final String LOGRADOURO = "Avenida Eulálio Modesto, s/n";
+	private static final Long ID = 1L;
+	private static final String EMAIL = "joao@email.com";
+	private static final String CEP = "68960970";
+	private static final String BAIRRO = "Centro";
+
 	private Usuario usuario;
 	@MockBean
 	UsuarioRepository usuarioRepository;
@@ -30,21 +38,21 @@ public class UsuarioServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		usuario = new Usuario();
-		usuario.setBairro("Centro");
-		usuario.setCep("68960970");
-		usuario.setEmail("joao@email.com");
-		usuario.setId(1L);
-		usuario.setLogradouro("Avenida Eulálio Modesto, s/n");
-		usuario.setNome("João");
-		usuario.setUf("AP");
+		usuario.setBairro(BAIRRO);
+		usuario.setCep(CEP);
+		usuario.setEmail(EMAIL);
+		usuario.setId(ID);
+		usuario.setLogradouro(LOGRADOURO);
+		usuario.setNome(NOME);
+		usuario.setUf(UF);
 	}
 
 	@Test
 	public void createUsuario() {
 		CEP cep = new CEP();
-		cep.setBairro("Centro");
-		cep.setLogradouro("Avenida Eulálio Modesto, s/n");
-		cep.setUf("AP");
+		cep.setBairro(BAIRRO);
+		cep.setLogradouro(LOGRADOURO);
+		cep.setUf(UF);
 		BDDMockito.given(usuarioRepository.save(Mockito.any())).willReturn(usuario);
 		Assert.assertEquals(usuario, usuarioService.createUsuario(usuario));
 	}
@@ -52,7 +60,7 @@ public class UsuarioServiceTest {
 	@Test
 	public void TestgetNotificationByIdSucess() {
 		BDDMockito.given(usuarioRepository.findById(Mockito.anyLong())).willReturn(Optional.of(usuario));
-		Assert.assertEquals(Optional.of(usuario), usuarioService.getBuscaCep("68960970"));
+		Assert.assertEquals(Optional.of(usuario), usuarioService.getBuscaCep(CEP));
 	}
 
 }

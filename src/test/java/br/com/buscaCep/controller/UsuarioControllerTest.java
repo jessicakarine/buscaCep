@@ -29,11 +29,25 @@ import br.com.buscaCep.service.UsuarioService;
 @AutoConfigureMockMvc
 public class UsuarioControllerTest {
 
-	@Autowired
-	private MockMvc mvc;
+	private static final String $_UF = "$.uf";
+	private static final String $_NOME = "$.nome";
+	private static final String $_LOGRADOURO = "$.logradouro";
+	private static final String $_EMAIL = "$.email";
+	private static final String $_CEP = "$.cep";
+	private static final String $_BAIRRO = "$.bairro";
+	private static final String $_ID = "$.id";
+	private static final String URL_FINAL = "/json/";
+	private static final String URL_INICIAL = "https://viacep.com.br/ws/";
+	private static final String UF = "AP";
+	private static final String NOME = "João";
+	private static final String LOGRADOURO = "Avenida Eulálio Modesto, s/n";
+	private static final Long ID = 1L;
+	private static final String EMAIL = "joao@email.com";
+	private static final String CEP = "68960970";
+	private static final String BAIRRO = "Centro";
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private MockMvc mvc;
 
 	@MockBean(name = "delete")
 	private UsuarioService usuarioServiceTest;
@@ -46,29 +60,27 @@ public class UsuarioControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		usuario = new Usuario();
-		usuario.setBairro("Centro");
-		usuario.setCep("68960970");
-		usuario.setEmail("joao@email.com");
-		usuario.setId(1L);
-		usuario.setLogradouro("Avenida Eulálio Modesto, s/n");
-		usuario.setNome("João");
-		usuario.setUf("AP");
+		usuario.setBairro(BAIRRO);
+		usuario.setCep(CEP);
+		usuario.setEmail(EMAIL);
+		usuario.setId(ID);
+		usuario.setLogradouro(LOGRADOURO);
+		usuario.setNome(NOME);
+		usuario.setUf(UF);
 
 	}
 
 	@Test
 	public void getUsuarioForCep() throws Exception {
 		BDDMockito.given(usuarioRepository.findById(Mockito.anyLong())).willReturn(Optional.of(usuario));
-		mvc.perform(get("https://viacep.com.br/ws/" + usuario.getCep() + "/json/")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(usuario.getId()))
-				.andExpect(jsonPath("$.bairro").value(usuario.getBairro()))
-				.andExpect(jsonPath("$.cep").value(usuario.getCep()))
-				.andExpect(jsonPath("$.email").value(usuario.getEmail()))
-				.andExpect(jsonPath("$.logradouro").value(usuario.getLogradouro()))
-				.andExpect(jsonPath("$.nome").value(usuario.getNome()))
-				.andExpect(jsonPath("$.uf").value(usuario.getUf()));
+		mvc.perform(get(URL_INICIAL + usuario.getCep() + URL_FINAL).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print()).andExpect(status().isOk())
+				.andExpect(jsonPath($_ID).value(usuario.getId()))
+				.andExpect(jsonPath($_BAIRRO).value(usuario.getBairro()))
+				.andExpect(jsonPath($_CEP).value(usuario.getCep()))
+				.andExpect(jsonPath($_EMAIL).value(usuario.getEmail()))
+				.andExpect(jsonPath($_LOGRADOURO).value(usuario.getLogradouro()))
+				.andExpect(jsonPath($_NOME).value(usuario.getNome())).andExpect(jsonPath($_UF).value(usuario.getUf()));
 	}
 
 }
